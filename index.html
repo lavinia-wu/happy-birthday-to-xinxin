@@ -27,8 +27,9 @@
             justify-content: center;
             align-items: center;
             font-family: "Helvetica Neue", Helvetica, "PingFang SC", Arial, sans-serif;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
+            padding: 20px;
         }
 
         @keyframes gradientBG {
@@ -37,7 +38,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 背景漂浮微观元素 */
+        /* 背景微观公式符号 */
         .floating-element {
             position: absolute;
             color: rgba(255, 255, 255, 0.15);
@@ -66,6 +67,7 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.25);
             width: 380px;
+            max-width: 100%;
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -145,17 +147,17 @@
             opacity: 0;
             z-index: 10;
             width: 820px; /* 双页总宽度 */
-            height: 560px;
+            height: 580px;
             background: var(--paper-white);
             border-radius: 16px;
             box-shadow: 0 30px 70px rgba(0,0,0,0.4);
             border: 8px solid #fff;
             overflow: hidden;
-            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.1);
             transform: scale(0.8);
         }
 
-        /* 贺卡飞入并展开后的激活状态 */
+        /* 贺卡激活状态 */
         .card-stage.active {
             display: flex !important;
             opacity: 1;
@@ -217,7 +219,7 @@
             font-family: monospace;
         }
 
-        /* 右侧栏：100% 专属于你的真心话呈现区 */
+        /* 右侧栏：真心话呈现区 */
         .card-right {
             width: 65%;
             padding: 45px 40px;
@@ -245,6 +247,7 @@
             text-align: justify;
             flex-grow: 1;
             overflow-y: auto;
+            padding-right: 5px;
         }
 
         .letter-content p {
@@ -278,27 +281,40 @@
             padding-top: 15px;
         }
 
-        /* ================= 移动端/小屏幕自适应 ================= */
+        /* ================= 移动端/小屏幕完美自适应 ================= */
         @media (max-width: 850px) {
+            body {
+                padding: 10px;
+                align-items: flex-start; /* 允许在手机长页面上往下滑动 */
+                overflow-y: auto;
+            }
             .card-stage {
-                width: 92%;
-                height: auto;
-                max-height: 90vh;
+                width: 100%;
+                height: auto; /* 让高度在手机上自由撑开，不限制死 */
+                max-height: none;
                 flex-direction: column;
+                transform: scale(1);
+            }
+            .card-stage.active {
+                display: block !important; /* 手机端改用块级排列，防止弹性盒压扁文本 */
             }
             .card-left {
                 width: 100%;
                 border-right: none;
                 border-bottom: 1px dashed rgba(153, 0, 51, 0.25);
-                padding: 25px;
+                padding: 30px 20px;
             }
             .card-right {
                 width: 100%;
-                padding: 25px;
+                padding: 30px 20px;
             }
             .cancer-sign { font-size: 45px; margin-bottom: 5px; }
             .main-title { font-size: 20px; margin-bottom: 15px; }
-            .letter-content { font-size: 13.5px; line-height: 1.8; }
+            .letter-content { 
+                font-size: 14px; 
+                line-height: 1.9; 
+                overflow-y: visible; /* 手机端不允许内部产生多余滚动条，让整个页面往下延展 */
+            }
         }
     </style>
 </head>
@@ -306,7 +322,7 @@
 
     <div class="battery-stage" id="batteryStage">
         <h1>🔋 能量加载中...</h1>
-        <p class="subtitle">深圳大学化学与环境工程学院 · 专属实验室通道</p >
+        <p class="subtitle">深圳大学化工学院 · 专属实验室通道</p >
         
         <div class="battery-container">
             <div class="battery-core" id="batteryCore"></div>
@@ -345,7 +361,7 @@
             </div>
 
             <div class="letter-signature">
-                ✨ 祝你：科研顺利，万事胜意 &bull; 🐏
+                ✨ 祝你：科研顺利，万事胜意 &bull; 🐏留
             </div>
         </div>
 
@@ -355,7 +371,7 @@
         // 1. 背景微观公式符号随机生成
         const elementsData = ['Li⁺', 'e⁻', '♋', 'SZU', '化学工程', '🔋', '库伦效率 100%', 'SCI一区'];
         function createParticles() {
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 12; i++) {
                 const el = document.createElement('div');
                 el.className = 'floating-element';
                 el.innerText = elementsData[Math.floor(Math.random() * elementsData.length)];
@@ -368,7 +384,7 @@
         }
         createParticles();
 
-        // 2. 充电逻辑与贺卡平铺展开切换
+        // 2. 充电逻辑与场景切换
         const startBtn = document.getElementById('startBtn');
         const batteryCore = document.getElementById('batteryCore');
         const statusText = document.getElementById('statusText');
@@ -389,20 +405,17 @@
                     statusText.innerText = "🔋 能量充沛！激活通道...";
                     statusText.style.color = "#00ffcc";
                     
-                    // 渐隐电池，渐显并展开贺卡
                     setTimeout(() => {
                         batteryStage.style.opacity = '0';
                         batteryStage.style.transform = 'scale(0.8)';
                         
                         setTimeout(() => {
                             batteryStage.style.display = 'none';
-                            
-                            // 激活贺卡平铺飞入动画
                             birthdayCard.classList.add('active');
                         }, 500);
                     }, 800);
                 }
-            }, 25); // 约2.5秒
+            }, 20);
         });
     </script>
 </body>
