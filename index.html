@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欣欣，生日快乐！</title>
+    <style>
+        :root {
+            --szu-red: #990033; /* 深圳大学荔枝红 */
+            --battery-green: #00ffcc; /* 电池科技绿 */
+            --paper-white: #fffdf9; /* 精致信笺暖白 */
+            --text-dark: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #162a45, #275d8c, #800026);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 背景漂浮微观元素 */
+        .floating-element {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: bold;
+            pointer-events: none;
+            user-select: none;
+            animation: floatUp 8s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* ================= 阶段一：电池充电舱 ================= */
+        .battery-stage {
+            text-align: center;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            width: 380px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .battery-stage h1 {
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #dddddd;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .battery-container {
+            width: 170px;
+            height: 85px;
+            border: 5px solid #fff;
+            border-radius: 14px;
+            margin: 0 auto 25px;
+            position: relative;
+            padding: 4px;
+        }
+
+        .battery-container::after {
+            content: '';
+            position: absolute;
+            right: -13px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 9px;
+            height: 28px;
+            background: #fff;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .battery-core {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff4e50, var(--battery-green));
+            border-radius: 6px;
+            box-shadow: 0 0 20px var(--battery-green);
+        }
+
+        .charging-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--battery-green);
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--szu-red), #ff5252);
+            border: none;
+            color: white;
+            padding: 13px 35px;
+            font-size: 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 78, 80, 0.3);
+            transition: 0.3s;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 78, 80, 0.5);
+        }
+
+        /* ================= 阶段二：平铺双页精美贺卡 ================= */
+        .card-stage {
+            display: none; /* 初始隐藏 */
+            opacity: 0;
+            z-index: 10;
+            width: 820px; /* 双页总宽度 */
+            height: 560px;
+            background: var(--paper-white);
+            border-radius: 16px;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+            border: 8px solid #fff;
+            overflow: hidden;
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            transform: scale(0.8);
+        }
+
+        /* 贺卡飞入并展开后的激活状态 */
+        .card-stage.active {
+            display: flex !important;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* 左侧栏：设计、巨蟹座与实验室氛围 */
+        .card-left {
+            width: 35%;
+            background: linear-gradient(180deg, #fffcf5 0%, #f7f1e3 100%);
+            border-right: 1px dashed rgba(153, 0, 51, 0.25);
+            padding: 40px 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .left-tag {
+            font-size: 11px;
+            color: var(--szu-red);
+            letter-spacing: 3px;
+            font-weight: bold;
+            border: 1px solid rgba(153, 0, 51, 0.3);
+            padding: 3px 12px;
+            border-radius: 4px;
+        }
+
+        .left-center-visual {
+            margin: 20px 0;
+        }
+
+        .cancer-sign {
+            font-size: 70px;
+            color: var(--szu-red);
+            line-height: 1;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .left-title-box h2 {
+            font-size: 18px;
+            color: var(--szu-red);
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        .left-title-box p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .left-footer-tech {
+            font-size: 11px;
+            color: #7f8c8d;
+            font-family: monospace;
+        }
+
+        /* 右侧栏：100% 专属于你的真心话呈现区 */
+        .card-right {
+            width: 65%;
+            padding: 45px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .main-title {
+            font-size: 24px;
+            color: var(--szu-red);
+            font-weight: 600;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(153, 0, 51, 0.1);
+            padding-bottom: 12px;
+        }
+
+        /* 你的贺词内容排版区 */
+        .letter-content {
+            font-size: 15px;
+            line-height: 2.1;
+            color: var(--text-dark);
+            text-align: justify;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .letter-content p {
+            margin-bottom: 16px;
+            text-indent: 2em; /* 首行缩进两格 */
+        }
+
+        /* 精美高亮划线 */
+        .mark-armor {
+            color: var(--szu-red);
+            font-weight: bold;
+            border-bottom: 2px dashed rgba(153, 0, 51, 0.4);
+            padding-bottom: 1px;
+        }
+
+        .mark-talent {
+            color: #047857;
+            font-weight: bold;
+            background: rgba(4, 120, 87, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px rgba(4, 120, 87, 0.2) solid;
+        }
+
+        .letter-signature {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #7f8c8d;
+            border-top: 1px solid #f1f2f6;
+            padding-top: 15px;
+        }
+
+        /* ================= 移动端/小屏幕自适应 ================= */
+        @media (max-width: 850px) {
+            .card-stage {
+                width: 92%;
+                height: auto;
+                max-height: 90vh;
+                flex-direction: column;
+            }
+            .card-left {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px dashed rgba(153, 0, 51, 0.25);
+                padding: 25px;
+            }
+            .card-right {
+                width: 100%;
+                padding: 25px;
+            }
+            .cancer-sign { font-size: 45px; margin-bottom: 5px; }
+            .main-title { font-size: 20px; margin-bottom: 15px; }
+            .letter-content { font-size: 13.5px; line-height: 1.8; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="battery-stage" id="batteryStage">
+        <h1>🔋 能量加载中...</h1>
+        <p class="subtitle">深圳大学化学与环境工程学院 · 专属实验室通道</p >
+        
+        <div class="battery-container">
+            <div class="battery-core" id="batteryCore"></div>
+        </div>
+        <div class="charging-text" id="statusText">Li⁺ 处于就绪状态</div>
+        
+        <button class="btn" id="startBtn">开启生日能量注入</button>
+    </div>
+
+    <div class="card-stage" id="birthdayCard">
+        
+        <div class="card-left">
+            <div class="left-tag">SZU &bull; 化学工程</div>
+            
+            <div class="left-center-visual">
+                <span class="cancer-sign">♋</span>
+                <div class="left-title-box">
+                    <h2>极度细腻的敏锐</h2>
+                    <p>你有着巨蟹座独特的温柔与专注，不仅在生活中体贴细节，更将这份过人的洞察力带进了微观的电池科研世界。</p >
+                </div>
+            </div>
+            
+            <div class="left-footer-tech">[ 🔋 满电状态注入成功 ]</div>
+        </div>
+
+        <div class="card-right">
+            <h1 class="main-title">欣欣，生日快乐！</h1>
+            
+            <div class="letter-content">
+                <p>我们毕业也一年了，在这一年里，你可能承受着远比本科时大得多的学业压力，面对着更为复杂的人际关系。</p >
+                <p>穿过重重困难，留下的疤痕是战绩，是<span class="mark-armor">盔甲</span>。夜深人静时，卸下盔甲，该感谢的一直是你自己！</p >
+                <p>其实，我一直觉得你很适合做科研，你身上有股认真劲，能关注到很多别人注意不到的细节，敢问，这些在我看来简直就是<span class="mark-talent">科研圣体</span>。</p >
+                <p>不是恭维，是就算很久没见面，回想到上实验的场景，脑子就自然涌现这些形象。</p >
+                <p>我在看到肖丹儿sci中刊，那一刻我总觉得，在未来的某一天，你也能和我分享这种喜悦。</p >
+                <p>言归正传，生日快乐！</p >
+            </div>
+
+            <div class="letter-signature">
+                ✨ 祝你：科研顺利，万事胜意 &bull; 🐏
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. 背景微观公式符号随机生成
+        const elementsData = ['Li⁺', 'e⁻', '♋', 'SZU', '化学工程', '🔋', '库伦效率 100%', 'SCI一区'];
+        function createParticles() {
+            for (let i = 0; i < 15; i++) {
+                const el = document.createElement('div');
+                el.className = 'floating-element';
+                el.innerText = elementsData[Math.floor(Math.random() * elementsData.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (Math.random() * 12 + 13) + 'px';
+                el.style.animationDelay = Math.random() * 5 + 's';
+                el.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                document.body.appendChild(el);
+            }
+        }
+        createParticles();
+
+        // 2. 充电逻辑与贺卡平铺展开切换
+        const startBtn = document.getElementById('startBtn');
+        const batteryCore = document.getElementById('batteryCore');
+        const statusText = document.getElementById('statusText');
+        const batteryStage = document.getElementById('batteryStage');
+        const birthdayCard = document.getElementById('birthdayCard');
+
+        startBtn.addEventListener('click', () => {
+            startBtn.style.display = 'none';
+            let progress = 0;
+            
+            const timer = setInterval(() => {
+                progress += 1;
+                batteryCore.style.width = progress + '%';
+                statusText.innerText = `Li⁺ 能量安全嵌入: ${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(timer);
+                    statusText.innerText = "🔋 能量充沛！激活通道...";
+                    statusText.style.color = "#00ffcc";
+                    
+                    // 渐隐电池，渐显并展开贺卡
+                    setTimeout(() => {
+                        batteryStage.style.opacity = '0';
+                        batteryStage.style.transform = 'scale(0.8)';
+                        
+                        setTimeout(() => {
+                            batteryStage.style.display = 'none';
+                            
+                            // 激活贺卡平铺飞入动画
+                            birthdayCard.classList.add('active');
+                        }, 500);
+                    }, 800);
+                }
+            }, 25); // 约2.5秒
+        });
+    </script>
+</body>
+</html>
